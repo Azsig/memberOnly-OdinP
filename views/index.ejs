@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages</title>
+</head>
+<body>
+  <h1>Messages</h1>
+  <% if (!user) { %>
+    <a href="/auth/login">Login</a> | <a href="/auth/register">Register</a>
+  <% } else { %>
+    <p>Welcome, <%= user.first_name %>!</p>
+    <% if (user && !user.is_member) { %>
+      <p>You are not a member yet. <a href="/auth/join">Join the Club</a></p>
+    <% } %>
+    <% if (!user.is_member) { %>
+      <a href="/auth/join">Join the Club</a>
+    <% } %>
+    <% if (user && user.is_member) { %>
+      <a href="/messages/new">Create a New Message</a>
+    <% } %>
+    <a href="/auth/logout">Logout</a>
+  <% } %>
+  <ul>
+    <% messages.forEach(message => { %>
+      <li>
+        <strong><%= message.title %></strong><br>
+        <%= message.text %><br>
+        <% if (user && user.is_member) { %>
+          <em>By: <%= message.first_name %> <%= message.last_name %></em><br>
+        <% } %>
+        <small><%= message.timestamp %></small>
+        <% if (user && user.is_admin) { %>
+          <form action="/messages/delete/<%= message.id %>" method="POST" style="display:inline;">
+            <button type="submit">Delete</button>
+          </form>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+</body>
+</html>
